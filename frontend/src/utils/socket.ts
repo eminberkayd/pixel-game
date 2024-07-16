@@ -1,20 +1,41 @@
-import { io } from "socket.io-client";
-
+const WS_URL = 'ws://localhost:8080/ws';
 class SocketHandler {
-    private socket = io();
+    private socket: WebSocket;
+    private subscribers: ((msg: string)=> any)[] = []
 
-
-    addEventHandler(eventName: string, cb: (...args: any) => any) {
-        this.socket.on(eventName, cb);
+    constructor(url: string){
+        this.socket = new WebSocket(url);
+        this.socket.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+        
+        this.socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            console.log('Received message:', message);
+            this.subscribers.forEach(cb => {
+                cb(message);
+            })
+        };
+        this.socket.onclose = (event) => {
+            console.log('WebSocket connection closed:', event);
+        };
+    
+        this.socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
     }
 
-    removeListeningEvent(eventName: string){
-        this.socket.off(eventName);
+    subscribeMessageEvent(cb: (msg: string) => any){
+        this.subscribers.push(cb);
     }
 
-    triggerEvent(eventName: string, message: string) {
-        this.socket.emit(eventName, message);
+    sendMessage(message: string){
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(message);
+        } else {
+            console.error('Message is not sent. WebSocket is not open');
+        }
     }
 }
 
-export const socketHandler = new SocketHandler();
+export const socketHandler = new SocketHandler(WS_URL);

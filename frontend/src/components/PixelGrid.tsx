@@ -13,22 +13,22 @@ export const PixelGrid = () => {
     }
 
     const handlePixelClick = (x: number, y: number, color: string = '#f2f1d2') => {
-        socketHandler.triggerEvent('pixelColorUpdate', JSON.stringify({
+        socketHandler.sendMessage(JSON.stringify({
             x,
             y,
             color
-        }));
+        }))
     }
 
     useEffect(() => {
         const data = api.getPixels();
         setPixelColors(data);
 
-        socketHandler.addEventHandler('pixelColorUpdate', ({ x, y, color }: Pixel) => {
-            changePixelColor(x, y, color);
-        });
-
-        return () => socketHandler.removeListeningEvent('pixelColorUpdate');
+        //socketHandler.addEventHandler('pixelColorUpdate', ({ x, y, color }: Pixel) => {
+        //    changePixelColor(x, y, color);
+        //});
+//
+        //return () => socketHandler.removeListeningEvent('pixelColorUpdate');
     }, []);
 
     return (

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"peaksel/handlers"
@@ -35,6 +36,8 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request, rdb *storage.RedisC
 			log.Println("Client disconnected:", conn.RemoteAddr().String())
 			break
 		}
+
+		fmt.Print("pixel: ", pixel)
 
 		// Handle the pixel event
 		handlers.HandlePixelEvent(rdb, conn, pixel)
