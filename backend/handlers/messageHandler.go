@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"peaksel/hub"
 	"peaksel/models"
 	"peaksel/storage"
 	"peaksel/utils"
@@ -36,6 +37,8 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 		color := payload["color"].(string)
 		username := payload["username"].(string)
 		storage.SetPixelValue(x, y, models.PixelData{Color: color, Username: username})
+		hub := hub.GetHubInstance()
+		hub.Broadcast(message)
 	case "getPixels":
 		values, err := storage.GetAllPixelValues()
 		if err != nil {
