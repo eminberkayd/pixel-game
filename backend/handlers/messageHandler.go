@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func HandleMessage(s *storage.StorageHandler, conn *websocket.Conn, message interface{}) {
+func HandleMessage(conn *websocket.Conn, message interface{}) {
 	fmt.Print("message: ", message)
 
 	msgMap, ok := message.(map[string]interface{})
@@ -35,9 +35,9 @@ func HandleMessage(s *storage.StorageHandler, conn *websocket.Conn, message inte
 		y := payload["y"].(int)
 		color := payload["color"].(string)
 		username := payload["username"].(string)
-		s.SetPixelValue(x, y, models.PixelData{Color: color, Username: username})
+		storage.SetPixelValue(x, y, models.PixelData{Color: color, Username: username})
 	case "getPixels":
-		values, err := s.GetAllPixelValues()
+		values, err := storage.GetAllPixelValues()
 		if err != nil {
 			return
 		}

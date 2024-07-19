@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"peaksel/handlers"
-	"peaksel/storage"
 
 	"github.com/gorilla/websocket"
 )
@@ -15,7 +14,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func HandleWebSocket(s *storage.StorageHandler, w http.ResponseWriter, r *http.Request) {
+func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("Upgrade error:", err)
@@ -33,6 +32,6 @@ func HandleWebSocket(s *storage.StorageHandler, w http.ResponseWriter, r *http.R
 			log.Println("Client disconnected:", conn.RemoteAddr().String())
 			break
 		}
-		handlers.HandleMessage(s, conn, message)
+		handlers.HandleMessage(conn, message)
 	}
 }
