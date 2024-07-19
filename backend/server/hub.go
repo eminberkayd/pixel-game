@@ -17,7 +17,7 @@ var (
 	once        sync.Once
 )
 
-func NewHub() *Hub {
+func newHub() *Hub {
 	return &Hub{
 		connections: make(map[*websocket.Conn]struct{}),
 	}
@@ -25,7 +25,7 @@ func NewHub() *Hub {
 
 func GetHubInstance() *Hub {
 	once.Do(func() {
-		hubInstance = NewHub()
+		hubInstance = newHub()
 	})
 	return hubInstance
 }
