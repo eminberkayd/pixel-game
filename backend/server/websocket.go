@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"peaksel/handlers"
+	"peaksel/hub"
 
 	"github.com/gorilla/websocket"
 )
@@ -21,6 +22,11 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer conn.Close()
+
+	hub := hub.GetHubInstance()
+	hub.AddConnection(conn)
+	defer hub.RemoveConnection(conn)
+
 	log.Println("Client connected:", conn.RemoteAddr().String())
 	for {
 		var message interface{}
