@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"peaksel/hub"
 	"peaksel/models"
 	"peaksel/storage"
 	"peaksel/utils"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -32,11 +34,11 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 			utils.ErrorLogger.Println("Invalid payload format")
 			return
 		}
-		x := payload["x"].(int)
-		y := payload["y"].(int)
+		x := payload["x"].(float64)
+		y := payload["y"].(float64)
 		color := payload["color"].(string)
 		username := payload["username"].(string)
-		storage.SetPixelValue(x, y, models.PixelData{Color: color, Username: username})
+		storage.SetPixelValue(int(x), int(y), models.PixelData{Color: color, Username: username, LastChangeTime: time.Now()})
 		hub := hub.GetHubInstance()
 		hub.Broadcast(message)
 	case "getPixels":
@@ -44,7 +46,17 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 		if err != nil {
 			return
 		}
-		conn.WriteJSON(values)
+		response := map[string]interface{}{
+			"eventName": "allPixels",
+			"values":    values,
+		}
+		jsonMessage, err := json.Marshal(response)
+		fmt.Print("json: ", jsonMessage)
+		if err != nil {
+			utils.ErrorLogger.Fatalf("Error marshaling JSON: %v", err)
+			break
+		}
+		conn.WriteJSON(string(jsonMessage))
 	default:
 		utils.ErrorLogger.Println("Unknown eventName:", eventName)
 	}
