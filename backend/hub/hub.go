@@ -8,8 +8,12 @@ import (
 )
 
 type Hub struct {
-	connections map[*websocket.Conn]struct{} // Use map to decrease complexity(O(1)). Use struct{} as the value type to save space.
+	connections map[*websocket.Conn]ConnectionInfo // Use map to decrease complexity(O(1)).
 	mu          sync.Mutex
+}
+
+type ConnectionInfo struct {
+	Username string
 }
 
 var (
@@ -19,7 +23,7 @@ var (
 
 func newHub() *Hub {
 	return &Hub{
-		connections: make(map[*websocket.Conn]struct{}),
+		connections: make(map[*websocket.Conn]ConnectionInfo),
 	}
 }
 
@@ -33,7 +37,17 @@ func GetHubInstance() *Hub {
 func (h *Hub) AddConnection(conn *websocket.Conn) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	h.connections[conn] = struct{}{}
+	h.connections[conn] = ConnectionInfo{Username: ""}
+}
+
+func (h *Hub) SetConnectionInfo(conn *websocket.Conn, info ConnectionInfo) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.connections[conn] = info
+}
+
+func (h *Hub) GetConnections() map[*websocket.Conn]ConnectionInfo {
+	return h.connections
 }
 
 func (h *Hub) RemoveConnection(conn *websocket.Conn) {

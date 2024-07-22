@@ -28,6 +28,47 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 	}
 
 	switch eventName {
+
+	case "getOnlineUsers":
+		var usernames []string
+		hub := hub.GetHubInstance()
+		onlineUsers := hub.GetConnections()
+		for _, info := range onlineUsers {
+			usernames = append(usernames, info.Username)
+		}
+		response := map[string]interface{}{
+			"eventName": "onlineUsersList",
+			"usernames": usernames,
+		}
+		if err := conn.WriteJSON(response); err != nil {
+			utils.ErrorLogger.Println("write error for online users list:", err)
+			return
+		}
+	case "join":
+		username, ok := msgMap["username"].(string)
+		if !ok {
+			utils.ErrorLogger.Printf("Invalid message for join event %v", message)
+			break
+		}
+		hubInstance := hub.GetHubInstance()
+		hubInstance.SetConnectionInfo(conn, hub.ConnectionInfo{Username: username})
+		hubInstance.Broadcast(map[string]interface{}{
+			"eventName": "joined",
+			"username":  username,
+		})
+
+	case "leave":
+		username, ok := msgMap["username"].(string)
+		if !ok {
+			utils.ErrorLogger.Printf("Invalid message for leave event %v", message)
+			break
+		}
+		hub := hub.GetHubInstance()
+		hub.RemoveConnection(conn)
+		hub.Broadcast(map[string]interface{}{
+			"eventName": "leaved",
+			"username":  username,
+		})
 	case "setPixel":
 		payload, ok := msgMap["payload"].(map[string]interface{})
 		if !ok {
