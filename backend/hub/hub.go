@@ -1,7 +1,7 @@
 package hub
 
 import (
-	"peaksel/utils"
+	"peexel/utils"
 	"sync"
 
 	"github.com/gorilla/websocket"

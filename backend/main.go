@@ -2,8 +2,8 @@ package main
 
 import (
 	"net/http"
-	"peaksel/server"
-	"peaksel/utils"
+	"peexel/server"
+	"peexel/utils"
 )
 
 func main() {

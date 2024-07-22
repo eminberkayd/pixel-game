@@ -3,7 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
-	"peaksel/models"
+	"peexel/models"
 )
 
 // SetPixelValue sets the value for a specific pixel in the grid.

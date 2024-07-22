@@ -3,8 +3,8 @@ package server
 import (
 	"log"
 	"net/http"
-	"peaksel/handlers"
-	"peaksel/hub"
+	"peexel/handlers"
+	"peexel/hub"
 
 	"github.com/gorilla/websocket"
 )

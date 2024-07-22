@@ -3,10 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"peaksel/hub"
-	"peaksel/models"
-	"peaksel/storage"
-	"peaksel/utils"
+	"peexel/hub"
+	"peexel/models"
+	"peexel/storage"
+	"peexel/utils"
 	"time"
 
 	"github.com/gorilla/websocket"

@@ -1,4 +1,4 @@
-module peaksel
+module peexel
 
 go 1.22.5
 
