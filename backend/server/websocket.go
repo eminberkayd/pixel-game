@@ -29,7 +29,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Client connected:", conn.RemoteAddr().String())
 	for {
-		var message interface{}
+		var message map[string]interface{}
 		err := conn.ReadJSON(&message)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {

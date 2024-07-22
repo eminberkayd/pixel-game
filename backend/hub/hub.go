@@ -52,10 +52,20 @@ func (h *Hub) GetConnections() map[*websocket.Conn]ConnectionInfo {
 
 func (h *Hub) RemoveConnection(conn *websocket.Conn) {
 	h.mu.Lock()
-	defer h.mu.Unlock()
-	if _, ok := h.connections[conn]; ok {
+	var username string
+	if connectionInfo, ok := h.connections[conn]; ok {
 		delete(h.connections, conn)
 		conn.Close()
+		username = connectionInfo.Username
+	}
+	h.mu.Unlock()
+
+	if len(username) > 0 {
+		// If the username is not given, the user will not be counted as online.
+		h.Broadcast(map[string]interface{}{
+			"eventName": "userLeft",
+			"username":  username,
+		})
 	}
 }
 

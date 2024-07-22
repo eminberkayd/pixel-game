@@ -12,16 +12,9 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func HandleMessage(conn *websocket.Conn, message interface{}) {
-	fmt.Print("message: ", message)
-
-	msgMap, ok := message.(map[string]interface{})
-	if !ok {
-		utils.ErrorLogger.Println("Invalid message format: ", message)
-		return
-	}
-
-	eventName, ok := msgMap["eventName"].(string)
+func HandleMessage(conn *websocket.Conn, message map[string]interface{}) {
+	fmt.Println("Received Message: ", message)
+	eventName, ok := message["eventName"].(string)
 	if !ok {
 		utils.ErrorLogger.Println("eventName field missing or not a string")
 		return
@@ -34,7 +27,10 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 		hub := hub.GetHubInstance()
 		onlineUsers := hub.GetConnections()
 		for _, info := range onlineUsers {
-			usernames = append(usernames, info.Username)
+			if len(info.Username) > 0 {
+				// If the username is not given, the user will not be counted as online.
+				usernames = append(usernames, info.Username)
+			}
 		}
 		response := map[string]interface{}{
 			"eventName": "onlineUsersList",
@@ -45,7 +41,7 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 			return
 		}
 	case "join":
-		username, ok := msgMap["username"].(string)
+		username, ok := message["username"].(string)
 		if !ok {
 			utils.ErrorLogger.Printf("Invalid message for join event %v", message)
 			break
@@ -53,24 +49,11 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 		hubInstance := hub.GetHubInstance()
 		hubInstance.SetConnectionInfo(conn, hub.ConnectionInfo{Username: username})
 		hubInstance.Broadcast(map[string]interface{}{
-			"eventName": "joined",
-			"username":  username,
-		})
-
-	case "leave":
-		username, ok := msgMap["username"].(string)
-		if !ok {
-			utils.ErrorLogger.Printf("Invalid message for leave event %v", message)
-			break
-		}
-		hub := hub.GetHubInstance()
-		hub.RemoveConnection(conn)
-		hub.Broadcast(map[string]interface{}{
-			"eventName": "leaved",
+			"eventName": "userJoined",
 			"username":  username,
 		})
 	case "setPixel":
-		payload, ok := msgMap["payload"].(map[string]interface{})
+		payload, ok := message["payload"].(map[string]interface{})
 		if !ok {
 			utils.ErrorLogger.Println("Invalid payload format")
 			return
@@ -92,7 +75,6 @@ func HandleMessage(conn *websocket.Conn, message interface{}) {
 			"values":    values,
 		}
 		jsonMessage, err := json.Marshal(response)
-		fmt.Print("json: ", jsonMessage)
 		if err != nil {
 			utils.ErrorLogger.Fatalf("Error marshaling JSON: %v", err)
 			break
