@@ -36,6 +36,11 @@ const UsernameModal = ({ open, onStart }: { open: boolean, onStart: (username: s
             margin="dense"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (username.trim().length >= 3)) {
+                handleStart();
+              }
+            }} 
             label="Username"
             fullWidth
             variant="standard"
