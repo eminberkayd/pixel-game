@@ -66,7 +66,7 @@ const Chat = () => {
   useEffect(() => {
 
     api.getOnlineUsers().then(usernames => setOnlineUsers(usernames as string[]));
-    
+
     const handleNewChatMessage = (payload: any) => {
       setChatItems((prevItems) => [
         ...prevItems,
@@ -129,7 +129,7 @@ const Chat = () => {
         {chatItems.map(({ username, text, sentByCurrentUser, isMessage }, index) => (
           <Message key={index}>
             <strong>{sentByCurrentUser ? 'Me: ' : isMessage ? `${username}: ` : ''}</strong>
-            {text}
+            {isMessage ? text : <i>{text}</i>}
           </Message>
         ))}
       </ChatMessages>
