@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import UsernameModal from './components/UsernameModal';
-import Grid from './components/Grid';
+import PixelGrid from './components/PixelGrid';
 import Chat from './components/Chat';
 import { SketchPicker } from 'react-color';
 import { api } from './services/api';
@@ -82,7 +82,7 @@ const App = () => {
             display: 'flex',
             flex: 4
           }}>
-            <Grid pixels={pixels} onPixelClick={handlePixelClick} />
+            <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} />
           </div>
           <div style={{
             flex: 1,
