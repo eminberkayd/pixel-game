@@ -4,12 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"peexel/models"
+	"time"
 )
 
 // SetPixelValue sets the value for a specific pixel in the grid.
-func SetPixelValue(x, y int, data models.PixelData) error {
+func SetPixelValue(message models.SetPixelMessage) error {
+	data := models.PixelData{
+		Color:          message.Color,
+		Username:       message.Username,
+		LastChangeTime: time.Now(),
+	}
 	key := "pixel-grid"
-	field := fmt.Sprintf("%d:%d", x, y)
+	field := fmt.Sprintf("%d:%d", message.X, message.Y)
 	value, err := json.Marshal(data)
 	if err != nil {
 		return err
