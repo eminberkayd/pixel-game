@@ -10,20 +10,20 @@ class PeexelAPI {
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
                 console.log('Response is not given by server in 10 seconds');
-                resolve(Array(10).fill(Array(10).fill({
+                resolve(Array(100).fill(Array(100).fill({
                     color: '#122321',
                     username: 'string',
                 })));
             }, 10 * 1000);
             socket.once('allPixels', ({ values }: { values: PixelValues }) => {
                 clearTimeout(timeout);
-                let myArray = Array(10).fill(Array(10).fill({
+                let myArray = Array(100).fill(Array(100).fill({
                     color: '#122321',
                     username: 'string',
                 }));
                 for (const key in values) {
                     let [x, y] = key.split(':').map(Number);
-                    if(x <= 10 && y <= 10){
+                    if(x < 100 && y < 100){
                         myArray[x][y] = values[key];
                     }
                 }
