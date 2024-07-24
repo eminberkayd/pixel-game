@@ -13,7 +13,9 @@ class SocketHandler extends EventEmitter {
         };
 
         this.socket.onmessage = (event) => {
-            this.handleNewMessage(event.data);
+            console.log('received message: ', JSON.parse(event.data));
+            
+            this.handleNewMessage(JSON.parse(event.data));
         };
 
         this.socket.onclose = (event) => {
@@ -26,15 +28,13 @@ class SocketHandler extends EventEmitter {
     }
 
     handleNewMessage(message: Message) {
-        console.log('Received message: ', message);
-        console.log('typeof message: ', typeof message);
-        const { eventName, ...args } = message;
-        this.emit(eventName, args);
+        const { eventName, ...payload } = message;
+        this.emit(eventName, payload);
     }
 
-    sendNewMessage({ eventName, ...args }: Message) {
+    sendMessage({ eventName, ...payload }: Message) {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            const message = { eventName, ...args };
+            const message = { eventName, ...payload };
             const jsonMessage = JSON.stringify(message);
             this.socket.send(jsonMessage);
             return true;
