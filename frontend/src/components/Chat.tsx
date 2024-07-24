@@ -65,8 +65,8 @@ const Chat = () => {
 
   useEffect(() => {
 
-    api.getOnlineUsers()
-      .then(usernames => setOnlineUsers(usernames as string[]))
+    api.getOnlineUsers().then(usernames => setOnlineUsers(usernames as string[]));
+    
     const handleNewChatMessage = (payload: any) => {
       setChatItems((prevItems) => [
         ...prevItems,
@@ -87,6 +87,15 @@ const Chat = () => {
         ...prevItems,
         { isMessage: false, text: `${user.username} has left the game.` },
       ]);
+
+      setOnlineUsers((prevUsers) => {
+        let newUsers = [...prevUsers];
+        const index = newUsers.indexOf(user.username);
+        if (index !== -1) {
+          newUsers.splice(index, 1);
+        }
+        return newUsers
+      })
     };
 
     socket.on('newChatMessage', handleNewChatMessage);
