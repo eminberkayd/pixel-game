@@ -1,6 +1,6 @@
-## Peaksel Live
+## Peexel
 
-Peaksel Live is an interactive real-time pixel art game that allows users to collaboratively color a 1000x1000 pixel grid. Built with a modern tech stack, this project demonstrates the seamless integration of ReactJS for the frontend, Golang for the backend, Redis for efficient data management, and WebSockets for real-time communication.
+Peexel is an interactive real-time pixel art game that allows users to collaboratively color a 1000x1000 pixel grid. Built with a modern tech stack, this project demonstrates the seamless integration of ReactJS for the frontend, Golang for the backend, Redis for efficient data management, and WebSockets for real-time communication.
 
 #### Key Features:
 
