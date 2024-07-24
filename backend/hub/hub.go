@@ -50,6 +50,11 @@ func (h *Hub) GetConnections() map[*websocket.Conn]ConnectionInfo {
 	return h.connections
 }
 
+func (h *Hub) GetConnectionInfo(conn *websocket.Conn) (ConnectionInfo, bool) {
+	connectionInfo, isExist := h.connections[conn]
+	return connectionInfo, isExist
+}
+
 func (h *Hub) RemoveConnection(conn *websocket.Conn) {
 	h.mu.Lock()
 	var username string
@@ -73,6 +78,22 @@ func (h *Hub) Broadcast(message interface{}) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	for conn := range h.connections {
+		err := conn.WriteJSON(message)
+		if err != nil {
+			utils.ErrorLogger.Println("Error broadcasting message:", err)
+			conn.Close()
+			delete(h.connections, conn)
+		}
+	}
+}
+
+func (h *Hub) BroadcastExceptSender(senderConn *websocket.Conn, message interface{}) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	for conn := range h.connections {
+		if senderConn == conn {
+			continue
+		}
 		err := conn.WriteJSON(message)
 		if err != nil {
 			utils.ErrorLogger.Println("Error broadcasting message:", err)
