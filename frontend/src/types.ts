@@ -9,4 +9,11 @@ export interface PixelData {
     lastChangeTime?: Date
 }
 
+export interface IChatItem {
+    isMessage: boolean,
+    text ?: string,
+    username ?: string,
+    sentByCurrentUser ?: boolean
+}
+
 export type PixelColor = string;

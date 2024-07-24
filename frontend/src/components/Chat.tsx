@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { socket } from '../utils/socket';
 import { api } from '../services/api';
+import { IChatItem } from '../types';
 
 const ChatWrapper = styled.div`
   width: 100%;
@@ -57,58 +58,88 @@ const Button = styled.button`
   }
 `;
 
-const Chat = ({ username }: { username: string }) => {
-    const [messages, setMessages] = useState<{ username: string, message: string }[]>([]);
-    const [newMessage, setNewMessage] = useState('');
+const Chat = () => {
+  const [chatItems, setChatItems] = useState<IChatItem[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
-    useEffect(() => {
-        socket.on('newChatMessage', (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
+  useEffect(() => {
 
-        socket.on('onlineUsers', (users) => {
-            console.log('Online users:', users);
-        });
-
-        socket.on('joined', (user) => {
-            console.log('user: ', user, ' joined');
-        })
-
-        socket.on('leaved', (user) => {
-            console.log(`user: ${user} leaved`);
-        })
-    }, []);
-
-    const handleSendMessage = () => {
-        if (newMessage.trim()) {
-            setMessages([...messages, {message: newMessage, username}])
-            if(api.sendNewChatMessage(newMessage, username)){
-                setNewMessage('');
-            }
-        }
+    api.getOnlineUsers()
+      .then(usernames => setOnlineUsers(usernames as string[]))
+    const handleNewChatMessage = (payload: any) => {
+      setChatItems((prevItems) => [
+        ...prevItems,
+        { isMessage: true, text: payload.message, username: payload.username },
+      ]);
     };
 
-    return (
-        <ChatWrapper>
-            <ChatHeader>Chat Room</ChatHeader>
-            <ChatMessages>
-                {messages.map(({username, message}, index) => (
-                    <Message key={index}>
-                        <strong>{username}:</strong> {message}
-                    </Message>
-                ))}
-            </ChatMessages>
-            <ChatInput>
-                <InputField
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
-                    placeholder="Type a message"
-                />
-                <Button onClick={handleSendMessage}>Send</Button>
-            </ChatInput>
-        </ChatWrapper>
-    );
+    const handleUserJoined = (user: any) => {
+      setChatItems((prevItems) => [
+        ...prevItems,
+        { isMessage: false, text: `${user.username} has joined the game.` },
+      ]);
+      setOnlineUsers((prevUsers) => [...prevUsers, user.username])
+    };
+
+    const handleUserLeft = (user: any) => {
+      setChatItems((prevItems) => [
+        ...prevItems,
+        { isMessage: false, text: `${user.username} has left the game.` },
+      ]);
+    };
+
+    socket.on('newChatMessage', handleNewChatMessage);
+    socket.on('userJoined', handleUserJoined);
+    socket.on('userLeft', handleUserLeft);
+
+    return () => {
+      socket.off('newChatMessage', handleNewChatMessage);
+      socket.off('userJoined', handleUserJoined);
+      socket.off('userLeft', handleUserLeft);
+    };
+  }, []);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      if (api.sendNewChatMessage(newMessage)) {
+        setChatItems((prevItems) => [
+          ...prevItems,
+          { isMessage: true, sentByCurrentUser: true, text: newMessage.trim() },
+        ]);
+        setNewMessage('');
+      }
+    }
+  };
+
+  return (
+    <ChatWrapper>
+      <ChatHeader>Chat Room</ChatHeader>
+      <ChatHeader>{onlineUsers.length} online</ChatHeader>
+      <ChatMessages>
+        {chatItems.map(({ username, text, sentByCurrentUser, isMessage }, index) => (
+          <Message key={index}>
+            <strong>{sentByCurrentUser ? 'Me: ' : isMessage ? `${username}: ` : ''}</strong>
+            {text}
+          </Message>
+        ))}
+      </ChatMessages>
+      <ChatInput>
+        <InputField
+          type="text"
+          value={newMessage}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSendMessage();
+            }
+          }}
+          onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
+          placeholder="Type a message"
+        />
+        <Button onClick={handleSendMessage}>Send</Button>
+      </ChatInput>
+    </ChatWrapper>
+  );
 };
 
 export default Chat;
