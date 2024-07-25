@@ -38,39 +38,37 @@ const PixelGrid = ({ pixels, onPixelClick }: { pixels: PixelData[][], onPixelCli
   };
 
   return (
-    <Box sx={{ width: '100vmin', height: '100vmin', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-        <Grid container spacing={0.01} sx={{ width: '100%', height: '100%' }}>
-          {pixels.map((row, rowIndex) =>
-            row.map((pixelData, colIndex) => (
-              <Pixel
-                data={pixelData}
-                key={`${rowIndex} - ${colIndex}`}
-                onClick={() => onPixelClick(rowIndex, colIndex)}
-                onMouseEnter={(event) => handleMouseEnter(pixelData, rowIndex, colIndex, event)}
-                onMouseLeave={handleMouseLeave}
-              />
-            )
-            ))
-          }
-        </Grid>
-        {hoveredPixel && tooltipPosition && (
-          <Tooltip
-            open
-            title={`Pixel (${hoveredPixel.x}, ${hoveredPixel.y}): ${JSON.stringify(hoveredPixel.data)}`}
-            placement="top"
-            sx={{
-              position: 'absolute',
-              top: tooltipPosition.top,
-              left: tooltipPosition.left,
-              pointerEvents: 'none',
-            }}
-          >
-            <div></div>
-          </Tooltip>
-        )}
-      </Box>
-    </Box>
+    <div style={{ display: 'flex', flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+      <Grid container spacing={0.01} sx={{ width: '100%', height: '100%' }}>
+        {pixels.map((row, rowIndex) =>
+          row.map((pixelData, colIndex) => (
+            <Pixel
+              data={pixelData}
+              key={`${rowIndex} - ${colIndex}`}
+              onClick={() => onPixelClick(rowIndex, colIndex)}
+              onMouseEnter={(event) => handleMouseEnter(pixelData, rowIndex, colIndex, event)}
+              onMouseLeave={handleMouseLeave}
+            />
+          )
+          ))
+        }
+      </Grid>
+      {hoveredPixel && tooltipPosition && (
+        <Tooltip
+          open
+          title={`Pixel (${hoveredPixel.x}, ${hoveredPixel.y}): ${JSON.stringify(hoveredPixel.data)}`}
+          placement="top"
+          sx={{
+            position: 'absolute',
+            top: tooltipPosition.top,
+            left: tooltipPosition.left,
+            pointerEvents: 'none',
+          }}
+        >
+          <div></div>
+        </Tooltip>
+      )}
+    </div>
   );
 };
 
