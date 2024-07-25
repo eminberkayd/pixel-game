@@ -1,62 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { socket } from '../utils/socket';
 import { api } from '../services/api';
 import { IChatItem } from '../types';
-
-const ChatWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid #ddd;
-`;
-
-const ChatHeader = styled.div`
-  padding: 10px;
-  background-color: #282c34;
-  color: white;
-  font-size: 1.2rem;
-`;
-
-const ChatMessages = styled.div`
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  background-color: #f8f8f8;
-`;
-
-const Message = styled.div`
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
-`;
-
-const ChatInput = styled.div`
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-`;
-
-const InputField = styled.input`
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-right: 10px;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
+import { Button, TextField } from '@mui/material';
+import { ChatMessage } from './ChatMessage';
+import { ChatInfo } from './ChatInfo';
 
 const Chat = () => {
   const [chatItems, setChatItems] = useState<IChatItem[]>([]);
@@ -110,11 +58,16 @@ const Chat = () => {
   }, []);
 
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
+    const trimmedMessage = newMessage.trim();
+    if (trimmedMessage) {
+      if (trimmedMessage.split(' ').filter(word => word.length > 50).length !== 0) {
+        alert(`Any word can't be longer than 50 letters`)
+        return;
+      }
       if (api.sendNewChatMessage(newMessage)) {
         setChatItems((prevItems) => [
           ...prevItems,
-          { isMessage: true, sentByCurrentUser: true, text: newMessage.trim() },
+          { isMessage: true, sentByCurrentUser: true, text: trimmedMessage },
         ]);
         setNewMessage('');
       }
@@ -122,32 +75,53 @@ const Chat = () => {
   };
 
   return (
-    <ChatWrapper>
-      <ChatHeader>Chat Room</ChatHeader>
-      <ChatHeader>{onlineUsers.length} online</ChatHeader>
-      <ChatMessages>
+    <div style={{
+      display: 'flex',
+      flex: 1,
+      height: '100%',
+      flexDirection: 'column',
+      width: '100%',
+      textAlign: 'center',
+      overflow: 'auto'
+    }}>
+      <h1>Chat Room</h1>
+      <h3>{onlineUsers.length} online</h3>
+      <div>
         {chatItems.map(({ username, text, sentByCurrentUser, isMessage }, index) => (
-          <Message key={index}>
-            <strong>{sentByCurrentUser ? 'Me: ' : isMessage ? `${username}: ` : ''}</strong>
-            {isMessage ? text : <i>{text}</i>}
-          </Message>
+          isMessage ?
+            <ChatMessage key={index} username={username!} sentByCurrentUser={sentByCurrentUser || false} messageText={text!} />
+            :
+            <ChatInfo key={index} text={text!} />
         ))}
-      </ChatMessages>
-      <ChatInput>
-        <InputField
-          type="text"
-          value={newMessage}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSendMessage();
-            }
-          }}
-          onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
-          placeholder="Type a message"
-        />
-        <Button onClick={handleSendMessage}>Send</Button>
-      </ChatInput>
-    </ChatWrapper>
+
+      </div>
+      <div style={{ display: 'flex', margin: '1%', width: '100%' }}>
+        <div style={{ display: 'flex', flex: 3 }}>
+          <TextField
+            fullWidth={true}
+            value={newMessage}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSendMessage();
+              }
+            }}
+            onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
+            placeholder="Type a message"
+          />
+        </div>
+        <div style={{ display: 'flex', flex: 1, margin: '0.5%' }}>
+          <Button
+            onClick={handleSendMessage}
+            variant='contained'
+            disabled={newMessage.length === 0}
+            fullWidth={true}
+            sx={{
+              textTransform: 'none'  // Prevents text from being capitalized
+            }}
+          >Send</Button>
+        </div>
+      </div>
+    </div>
   );
 };
 
