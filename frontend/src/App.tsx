@@ -43,9 +43,7 @@ const App = () => {
       )
 
     // Handle pixel updates from the socket
-    const handleSetPixel = ({ x, y, username, color, lastChangeTime }: any) => {
-      console.log('Received setPixel event:', x, y, username, color, lastChangeTime);
-
+    const handleSetPixel = ({ x, y, username, color }: any) => {
       // Check if indices are within bounds
       if (x < 0 || x >= pixelsRef.current.length || y < 0 || y >= (pixelsRef.current[0] ? pixelsRef.current[0].length : 0)) {
         console.error('Invalid pixel indices:', x, y);
@@ -57,8 +55,6 @@ const App = () => {
 
       // Update the specific pixel
       newPixels[x][y] = { username, color, lastChangeTime: new Date() };
-
-      console.log('Updated pixels:', newPixels);
       setPixels(newPixels);
       pixelsRef.current = newPixels; // Update the ref as well
     };
@@ -70,27 +66,23 @@ const App = () => {
   }, [])
 
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      width: '100%',
+      height: '100%',
+      maxHeight: '100%',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+    }}>
       {!username ? (
         <UsernameModal open={username.length === 0} onStart={handleStart} />
       ) : (
-        <div style={{
-          flex: 1,
-          display: 'flex',
-        }}>
-          <div style={{
-            display: 'flex',
-            flex: 4
-          }}>
-            <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} />
-          </div>
-          <div style={{
-            flex: 1,
-            display: 'flex',
-          }}>
-            <Chat />
-          </div>
-        </div>
+
+        <>
+          <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} />
+          <Chat />
+        </>
+
       )}
       {(showColorPicker && selectedPixel) && (
         <div style={{ position: 'absolute', top: 20, right: 20 }}>
