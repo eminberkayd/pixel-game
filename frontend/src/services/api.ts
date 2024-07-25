@@ -17,13 +17,13 @@ class PeexelAPI {
             }, 10 * 1000);
             socket.once('allPixels', ({ values }: { values: PixelValues }) => {
                 clearTimeout(timeout);
-                let myArray = Array(100).fill(Array(100).fill({
+                let myArray = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => ({
                     color: '#122321',
                     username: 'string',
-                }));
+                })));
                 for (const key in values) {
                     let [x, y] = key.split(':').map(Number);
-                    if(x < 100 && y < 100){
+                    if (x < 100 && y < 100) {
                         myArray[x][y] = values[key];
                     }
                 }
