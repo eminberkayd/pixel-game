@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import UsernameModal from './components/UsernameModal';
 import PixelGrid from './components/PixelGrid';
 import Chat from './components/Chat';
@@ -20,10 +20,10 @@ const App = () => {
     setUsername(username);
   };
 
-  const handlePixelClick = (rowIndex: number, colIndex: number) => {
+  const handlePixelClick = useCallback((rowIndex: number, colIndex: number) => {
     setSelectedPixel({ rowIndex, colIndex });
     setShowColorPicker(true);
-  };
+  }, []);
 
   const handleColorChange = (color: string) => {
     if (selectedPixel) {
@@ -77,7 +77,6 @@ const App = () => {
       {!username ? (
         <UsernameModal open={username.length === 0} onStart={handleStart} />
       ) : (
-
         <>
           <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} />
           <Chat />
