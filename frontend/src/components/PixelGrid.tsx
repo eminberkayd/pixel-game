@@ -1,41 +1,21 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import { PixelData } from '../types';
-
-const Pixel = ({ data, onClick, onMouseEnter, onMouseLeave }: { data: PixelData, onClick: () => any, onMouseEnter: (event: React.MouseEvent) => void, onMouseLeave: () => void }) => {
-  return (
-    <Grid item xs={12 / 100}>
-      <Box
-        sx={{
-          position: 'relative',
-          width: '100%',
-          aspectRatio: '1',
-          backgroundColor: data.color,
-          border: '1px solid #ddd',
-        }}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      />
-    </Grid>
-  );
-};
+import { Pixel } from "./Pixel";
 
 const PixelGrid = ({ pixels, onPixelClick }: { pixels: PixelData[][], onPixelClick: (x: number, y: number) => any }) => {
   const [hoveredPixel, setHoveredPixel] = useState<{ data: PixelData, x: number, y: number } | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number, left: number } | null>(null);
-
-  const handleMouseEnter = (pixelData: PixelData, x: number, y: number, event: React.MouseEvent) => {
+  const handleMouseEnter = useCallback((pixelData: PixelData, x: number, y: number, e: React.MouseEvent) => {
     setHoveredPixel({ data: pixelData, x, y });
-    setTooltipPosition({ top: event.clientY, left: event.clientX });
-  };
+    setTooltipPosition({ top: e.clientY, left: e.clientX });
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setHoveredPixel(null);
     setTooltipPosition(null);
-  };
+  }, []);
 
   return (
     <div style={{ display: 'flex', flex: 4, justifyContent: 'center', alignItems: 'center' }}>
@@ -43,10 +23,12 @@ const PixelGrid = ({ pixels, onPixelClick }: { pixels: PixelData[][], onPixelCli
         {pixels.map((row, rowIndex) =>
           row.map((pixelData, colIndex) => (
             <Pixel
+              x={rowIndex}
+              y={colIndex}
               data={pixelData}
               key={`${rowIndex} - ${colIndex}`}
-              onClick={() => onPixelClick(rowIndex, colIndex)}
-              onMouseEnter={(event) => handleMouseEnter(pixelData, rowIndex, colIndex, event)}
+              onClick={onPixelClick}
+              onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             />
           )
@@ -72,4 +54,4 @@ const PixelGrid = ({ pixels, onPixelClick }: { pixels: PixelData[][], onPixelCli
   );
 };
 
-export default PixelGrid;
+export default React.memo(PixelGrid);
