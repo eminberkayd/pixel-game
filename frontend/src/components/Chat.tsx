@@ -64,13 +64,12 @@ const Chat = () => {
         alert(`Any word can't be longer than 50 letters`)
         return;
       }
-      if (api.sendNewChatMessage(newMessage)) {
-        setChatItems((prevItems) => [
-          ...prevItems,
-          { isMessage: true, sentByCurrentUser: true, text: trimmedMessage },
-        ]);
-        setNewMessage('');
-      }
+      api.sendNewChatMessage(newMessage)
+      setChatItems((prevItems) => [
+        ...prevItems,
+        { isMessage: true, sentByCurrentUser: true, text: trimmedMessage },
+      ]);
+      setNewMessage('');
     }
   };
 
