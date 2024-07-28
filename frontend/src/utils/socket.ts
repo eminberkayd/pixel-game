@@ -1,25 +1,35 @@
 import EventEmitter from "events";
+
 interface Message extends Record<string, any> {
     eventName: string;
 }
+
 class SocketHandler extends EventEmitter {
     private socket: WebSocket;
+    private connected = false;
+    private messageQueue: { message: Message; retries: number }[] = [];
+    private readonly maxRetries = 3;
+    private readonly retryDelay = 1000; // 1 second
 
     constructor(url: string) {
         super();
         this.socket = new WebSocket(url);
+
         this.socket.onopen = () => {
+            this.connected = true;
             console.log('WebSocket connection established');
+            // Send all queued messages
+            this.sendQueuedMessages();
         };
 
         this.socket.onmessage = (event) => {
-            console.log('received message: ', JSON.parse(event.data));
-            
+            console.log('Received message:', JSON.parse(event.data));
             this.handleNewMessage(JSON.parse(event.data));
         };
 
         this.socket.onclose = (event) => {
             console.log('WebSocket connection closed:', event);
+            this.connected = false;
         };
 
         this.socket.onerror = (error) => {
@@ -32,16 +42,33 @@ class SocketHandler extends EventEmitter {
         this.emit(eventName, payload);
     }
 
-    sendMessage({ eventName, ...payload }: Message) {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            const message = { eventName, ...payload };
-            const jsonMessage = JSON.stringify(message);
-            this.socket.send(jsonMessage);
-            return true;
+    sendMessage(message: Message, retries = this.maxRetries) {
+        const jsonMessage = JSON.stringify(message);
+        const send = () => {
+            if (this.connected && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(jsonMessage);
+                console.log('Message sent:', message);
+            } else if (retries > 0) {
+                console.log(`Retrying message: ${message.eventName}, retries left: ${retries}`);
+                setTimeout(() => {
+                    this.sendMessage(message, retries - 1);
+                }, this.retryDelay);
+            } else {
+                console.error('Message not sent after retries:', message);
+            }
+        };
+        if (this.connected && this.socket.readyState === WebSocket.OPEN) {
+            send();
         } else {
-            console.error('Message is not sent. WebSocket is not open');
+            this.messageQueue.push({ message, retries });
+            console.log(`Message queued: ${message.eventName}`);
         }
-        return false;
+    }
+
+    sendQueuedMessages() {
+        for (const { message, retries } of this.messageQueue) {
+            this.sendMessage(message, retries);
+        }
     }
 }
 
