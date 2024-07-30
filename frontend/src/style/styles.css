@@ -34,12 +34,12 @@ body {
   position: sticky;
   padding: 2vh;
   top: 0;
-  background-color: yellow;
+  background-color: #ebeae8;
 }
 
 .chat-message {
-  padding: 1vh;
-  margin: 1vh;
+  padding: 0.8vh;
+  margin: 0.5vh;
   border: 1px solid black;
   width: fit-content;
   max-width: 80%;
@@ -56,7 +56,7 @@ body {
 }
 
 .chat-info {
-  background-color: #5f3737;
+  background-color: #c7c5c1;
   padding: 5px;
 }
 
@@ -70,4 +70,10 @@ body {
   border-radius: 1vh;
   background-color: white;
   text-align: center;
+}
+
+#new-message-form {
+  position: fixed;
+  bottom: 0px;
+  padding: 1vw;
 }

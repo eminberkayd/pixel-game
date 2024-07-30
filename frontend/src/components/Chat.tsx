@@ -88,7 +88,7 @@ const Chat = () => {
         ))}
 
       </div>
-      <div style={{ display: 'flex', flex: 3 }}>
+      <div id='new-message-form'>
         <TextField
           fullWidth={true}
           value={newMessage}
@@ -100,8 +100,6 @@ const Chat = () => {
           onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
           placeholder="Type a message"
         />
-      </div>
-      <div style={{ display: 'flex', flex: 1, margin: '0.5%' }}>
         <Button
           onClick={handleSendMessage}
           variant='contained'
