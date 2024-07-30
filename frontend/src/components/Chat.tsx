@@ -74,17 +74,11 @@ const Chat = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flex: 1,
-      height: '100%',
-      flexDirection: 'column',
-      width: '100%',
-      textAlign: 'center',
-      overflow: 'auto'
-    }}>
-      <h1>Chat Room</h1>
-      <h3>{onlineUsers.length} online</h3>
+    <div id='chat-container'>
+      <div id='chat-header'>
+        <h1>Chat Room</h1>
+        <h3>{onlineUsers.length} online</h3>
+      </div>
       <div>
         {chatItems.map(({ username, text, sentByCurrentUser, isMessage }, index) => (
           isMessage ?
@@ -94,31 +88,29 @@ const Chat = () => {
         ))}
 
       </div>
-      <div style={{ display: 'flex', margin: '1%', width: '100%' }}>
-        <div style={{ display: 'flex', flex: 3 }}>
-          <TextField
-            fullWidth={true}
-            value={newMessage}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSendMessage();
-              }
-            }}
-            onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
-            placeholder="Type a message"
-          />
-        </div>
-        <div style={{ display: 'flex', flex: 1, margin: '0.5%' }}>
-          <Button
-            onClick={handleSendMessage}
-            variant='contained'
-            disabled={newMessage.length === 0}
-            fullWidth={true}
-            sx={{
-              textTransform: 'none'  // Prevents text from being capitalized
-            }}
-          >Send</Button>
-        </div>
+      <div style={{ display: 'flex', flex: 3 }}>
+        <TextField
+          fullWidth={true}
+          value={newMessage}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSendMessage();
+            }
+          }}
+          onChange={(e) => setNewMessage(e.target.value.slice(0, 255))}
+          placeholder="Type a message"
+        />
+      </div>
+      <div style={{ display: 'flex', flex: 1, margin: '0.5%' }}>
+        <Button
+          onClick={handleSendMessage}
+          variant='contained'
+          disabled={newMessage.length === 0}
+          fullWidth={true}
+          sx={{
+            textTransform: 'none'  // Prevents text from being capitalized
+          }}
+        >Send</Button>
       </div>
     </div>
   );

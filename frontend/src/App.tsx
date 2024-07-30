@@ -6,12 +6,13 @@ import { SketchPicker } from 'react-color';
 import { api } from './services/api';
 import { socket } from './utils/socket';
 import { PixelData } from './types';
+import { PixelInfoTooltip } from './components/PixelInfoTooltip';
 
 const App = () => {
   const [username, setUsername] = useState<string>("");
   const [pixels, setPixels] = useState<PixelData[][]>([]);
   const pixelsRef = useRef(pixels); // Use a ref to hold the pixels state
-
+  const [hoveredPixel, setHoveredPixel] = useState<{ data: PixelData, x: number, y: number } | null>(null);
   const [selectedPixel, setSelectedPixel] = useState<{ rowIndex: number, colIndex: number }>();
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -66,26 +67,20 @@ const App = () => {
   }, [])
 
   return (
-    <div style={{
-      display: 'flex',
-      width: '100%',
-      height: '100%',
-      maxHeight: '100%',
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-    }}>
+    <div id='app-container' >
       {!username ? (
         <UsernameModal open={username.length === 0} onStart={handleStart} />
       ) : (
         <>
-          <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} />
+          <PixelGrid pixels={pixels} onPixelClick={handlePixelClick} setHoveredPixel={setHoveredPixel} />
           <Chat />
+          {hoveredPixel && <PixelInfoTooltip data={{ x: hoveredPixel.x, y: hoveredPixel.y, ...hoveredPixel.data }} />}
         </>
-
       )}
       {(showColorPicker && selectedPixel) && (
-        <div style={{ position: 'absolute', top: 20, right: 20 }}>
+        <div id='color-selector'>
           <SketchPicker
+            width='15vw'
             color={pixels[selectedPixel.rowIndex][selectedPixel.colIndex]?.color}
             onChange={(e) => handleColorChange(e.hex)}
           />

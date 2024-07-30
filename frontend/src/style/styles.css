@@ -4,6 +4,70 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
   box-sizing: border-box;
+}
+
+#app-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+#color-selector {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 2vw;
+}
+
+#chat-container {
+  height: 100vh;
+  width: 20vw;
+  text-align: center;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+#chat-header {
+  position: sticky;
+  padding: 2vh;
+  top: 0;
+  background-color: yellow;
+}
+
+.chat-message {
+  padding: 1vh;
+  margin: 1vh;
+  border: 1px solid black;
+  width: fit-content;
+  max-width: 80%;
+}
+
+.sent-by-current-user {
+  background-color: #bad4c1;
+  border-radius: 1vh 0 1vh 1vh;
+}
+
+.sent-by-other-user {
+  background-color: #c1bad4;
+  border-radius: 0 1vh 1vh 1vh;
+}
+
+.chat-info {
+  background-color: #5f3737;
+  padding: 5px;
+}
+
+#pixel-info-tooltip {
+  position: -webkit-sticky;
+  position: fixed;
+  padding: 1vw;
+  border: 0.1vh solid black;
+  bottom: 2vw;
+  right: 2vw;
+  border-radius: 1vh;
+  background-color: white;
+  text-align: center;
 }
