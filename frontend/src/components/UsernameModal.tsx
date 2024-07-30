@@ -40,7 +40,7 @@ const UsernameModal = ({ open, onStart }: { open: boolean, onStart: (username: s
               if (e.key === 'Enter' && (username.trim().length >= 3)) {
                 handleStart();
               }
-            }} 
+            }}
             label="Username"
             fullWidth
             variant="standard"

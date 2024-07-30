@@ -11,9 +11,9 @@ export interface PixelData {
 
 export interface IChatItem {
     isMessage: boolean,
-    text ?: string,
-    username ?: string,
-    sentByCurrentUser ?: boolean
+    text?: string,
+    username?: string,
+    sentByCurrentUser?: boolean
 }
 
 export type PixelColor = string;
