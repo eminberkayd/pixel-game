@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Grid, Box } from '@mui/material';
 import { PixelData } from '../types';
 
 export const Pixel = React.memo(({ x, y, data, onClick, onMouseEnter, onMouseLeave }: { data: PixelData, x: number, y: number, onClick: (x: number, y: number) => any, onMouseEnter: (data: PixelData, x: number, y: number, event: React.MouseEvent) => void, onMouseLeave: () => void }) => {

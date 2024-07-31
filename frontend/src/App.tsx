@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import UsernameModal from './components/UsernameModal';
-import PixelGrid from './components/PixelGrid';
-import Chat from './components/Chat';
 import { SketchPicker } from 'react-color';
-import { api } from './services/api';
 import { socket } from './utils/socket';
+import { api } from './services/api';
 import { PixelData } from './types';
-import { PixelInfoTooltip } from './components/PixelInfoTooltip';
+import {
+  UsernameModal,
+  PixelGrid,
+  Chat,
+  PixelInfoTooltip
+} from './components';
 
 const App = () => {
   const [username, setUsername] = useState<string>("");

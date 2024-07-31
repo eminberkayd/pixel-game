@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText
+} from '@mui/material';
 
-const UsernameModal = ({ open, onStart }: { open: boolean, onStart: (username: string) => any }) => {
+export const UsernameModal = ({ open, onStart }: { open: boolean, onStart: (username: string) => any }) => {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
@@ -57,7 +59,4 @@ const UsernameModal = ({ open, onStart }: { open: boolean, onStart: (username: s
       </Dialog>
     </React.Fragment>
   );
-}
-
-
-export default UsernameModal;
+};

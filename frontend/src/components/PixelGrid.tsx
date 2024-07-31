@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { PixelData } from '../types';
 import { Pixel } from "./Pixel";
 
-const PixelGrid = ({ pixels, onPixelClick, setHoveredPixel }: {
+export const PixelGrid = React.memo(({ pixels, onPixelClick, setHoveredPixel }: {
   pixels: PixelData[][],
   onPixelClick: (x: number, y: number) => any,
   setHoveredPixel: React.Dispatch<React.SetStateAction<{
@@ -41,6 +41,4 @@ const PixelGrid = ({ pixels, onPixelClick, setHoveredPixel }: {
 
     </div>
   );
-};
-
-export default React.memo(PixelGrid);
+});

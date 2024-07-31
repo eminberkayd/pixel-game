@@ -6,7 +6,7 @@ import { ChatHeader } from './ChatHeader';
 import { ChatContent } from './ChatContent';
 import { NewMessageForm } from './NewMessageForm';
 
-const Chat = () => {
+export const Chat = () => {
   const [chatItems, setChatItems] = useState<IChatItem[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
@@ -80,4 +80,3 @@ const Chat = () => {
   );
 };
 
-export default Chat;
