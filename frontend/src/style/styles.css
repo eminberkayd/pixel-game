@@ -23,18 +23,23 @@ body {
 }
 
 #chat-container {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   width: 20vw;
-  text-align: center;
-  overflow: auto;
-  overflow-x: hidden;
 }
 
 #chat-header {
   position: sticky;
+  text-align: center;
   padding: 2vh;
   top: 0;
   background-color: #ebeae8;
+}
+
+#chat-content {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .chat-message {
@@ -46,18 +51,19 @@ body {
 }
 
 .sent-by-current-user {
-  background-color: #bad4c1;
+  background-color: #d3ddde;
   border-radius: 1vh 0 1vh 1vh;
 }
 
 .sent-by-other-user {
-  background-color: #c1bad4;
+  background-color: #ebebeb;
   border-radius: 0 1vh 1vh 1vh;
 }
 
 .chat-info {
   background-color: #c7c5c1;
   padding: 5px;
+  text-align: center;
 }
 
 #pixel-info-tooltip {
@@ -73,7 +79,8 @@ body {
 }
 
 #new-message-form {
-  position: fixed;
-  bottom: 0px;
-  padding: 1vw;
+  width: 18vw;
+  margin-top: auto;
+  margin: 1vw;
+  background-color: white;
 }
