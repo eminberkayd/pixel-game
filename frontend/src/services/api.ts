@@ -11,14 +11,14 @@ class PeexelAPI {
             const timeout = setTimeout(() => {
                 console.log('Response is not given by server in 10 seconds');
                 resolve(Array(100).fill(Array(100).fill({
-                    color: '#122321',
+                    color: '#ffffff',
                     username: 'string',
                 })));
             }, 10 * 1000);
             socket.once('allPixels', ({ values }: { values: PixelValues }) => {
                 clearTimeout(timeout);
                 let myArray = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => ({
-                    color: '#122321',
+                    color: '#ffffff',
                     username: 'string',
                 })));
                 for (const key in values) {
