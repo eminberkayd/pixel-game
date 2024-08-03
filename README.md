@@ -1,6 +1,6 @@
 ## Peexel
 
-Peexel is an interactive real-time pixel art game that allows users to collaboratively color a 100x100 pixel grid. Built with a modern tech stack, this project demonstrates the seamless integration of ReactJS for the frontend, Golang for the backend, Redis for efficient data management, and WebSockets for real-time communication.
+[peexel](http://peexel.xyz) is an interactive real-time pixel art game that allows users to collaboratively color a 100x100 pixel grid. Built with a modern tech stack, this project demonstrates the seamless integration of ReactJS for the frontend, Golang for the backend, Redis for efficient data management, and WebSockets for real-time communication.
 
 #### Key Features:
 
@@ -16,3 +16,7 @@ Peexel is an interactive real-time pixel art game that allows users to collabora
 * Backend: Golang
 * Database: Redis
 * Communication Protocol: WebSocket
+
+#### Deployment
+
+- The project is deployed on an AWS EC2(t3.micro) instance. [Domain](http://peexel.xyz) was purchased from namecheap.com.
