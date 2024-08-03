@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { socket } from '../utils/socket';
 import { api } from '../services/api';
 import { IChatItem } from '../types';
@@ -9,9 +9,17 @@ import { NewMessageForm } from './NewMessageForm';
 export const Chat = () => {
   const [chatItems, setChatItems] = useState<IChatItem[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
+  }
 
   useEffect(() => {
-
+    scrollToBottom();
+  }, [chatItems])
+  
+  useEffect(() => {
     api.getOnlineUsers().then(usernames => setOnlineUsers(usernames as string[]));
 
     const handleNewChatMessage = (payload: any) => {
@@ -76,6 +84,7 @@ export const Chat = () => {
       <ChatHeader onlineUsersCount={onlineUsers.length} />
       <ChatContent chatItems={chatItems} />
       <NewMessageForm handleSendMessage={handleSendMessage} />
+      <div ref={messagesEndRef} />
     </div>
   );
 };
