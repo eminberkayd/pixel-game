@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"peexel/hub"
 	"peexel/storage"
 	"peexel/utils"
@@ -10,7 +9,6 @@ import (
 )
 
 func HandleMessage(conn *websocket.Conn, message map[string]interface{}) {
-	fmt.Println("Received Message: ", message)
 	eventName, ok := message["eventName"].(string)
 	if !ok {
 		utils.ErrorLogger.Println("eventName field missing or not a string")

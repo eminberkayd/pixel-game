@@ -27,7 +27,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	hub.AddConnection(conn)
 	defer hub.RemoveConnection(conn)
 
-	log.Println("Client connected:", conn.RemoteAddr().String())
+	// log.Println("Client connected:", conn.RemoteAddr().String())
 	for {
 		var message map[string]interface{}
 		err := conn.ReadJSON(&message)
@@ -35,7 +35,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("Unexpected close error: %v", err)
 			}
-			log.Println("Client disconnected:", conn.RemoteAddr().String())
+			//log.Println("Client disconnected:", conn.RemoteAddr().String())
 			break
 		}
 		handlers.HandleMessage(conn, message)
