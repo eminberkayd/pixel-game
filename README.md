@@ -2,6 +2,8 @@
 
 [peexel](http://peexel.xyz) is an interactive real-time pixel art game that allows users to collaboratively color a 100x100 pixel grid. Built with a modern tech stack, this project demonstrates the seamless integration of ReactJS for the frontend, Golang for the backend, Redis for efficient data management, and WebSockets for real-time communication.
 
+<img src="images/peexel-ss.png" alt="Game screenshot" width="100%"/>
+
 #### Key Features:
 
 - Real-Time Collaboration: Users can instantly see changes made by others, fostering a collaborative environment.
