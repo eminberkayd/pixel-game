@@ -72,5 +72,6 @@ class SocketHandler extends EventEmitter {
     }
 }
 
-const WS_URL = 'ws://localhost:8080/ws';
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+const WS_URL = `${backendUrl}/ws`;
 export const socket = new SocketHandler(WS_URL);

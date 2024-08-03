@@ -20,7 +20,7 @@ func GetRedisConnectionPoint() *RedisConnection {
 	once.Do(func() {
 		// Initialize Redis client
 		client := redis.NewClient(&redis.Options{
-			Addr: "localhost:6379", // TODO: use env
+			Addr: "redis:6379",
 		})
 		ctx := context.Background()
 		instance = &RedisConnection{client, ctx}
